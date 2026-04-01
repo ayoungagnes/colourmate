@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ColourFilter, EMPTY_FILTER } from '@/src/colour/services/colourQueryService';
+import { ColourFilter, EMPTY_FILTER, HUE_ORDER } from '@/src/colour/services/colourQueryService';
 
 export function FilterSheet({
   visible,
@@ -32,6 +32,14 @@ export function FilterSheet({
     });
   };
 
+  const toggleTag = (tag: string) => {
+    setDraft((prev) => {
+      const next = new Set(prev.tags);
+      next.has(tag) ? next.delete(tag) : next.add(tag);
+      return { ...prev, tags: next };
+    });
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={s.backdrop} onPress={onClose} />
@@ -51,6 +59,17 @@ export function FilterSheet({
             trackColor={{ true: '#4A90D9' }}
           />
         </View>
+        <Text style={s.sectionLabel}>Hue</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.hueRow} contentContainerStyle={s.hueRowContent}>
+          {HUE_ORDER.map((hue) => {
+            const active = draft.tags.has(hue);
+            return (
+              <Pressable key={hue} style={[s.hueChip, active && s.hueChipActive]} onPress={() => toggleTag(hue)}>
+                <Text style={[s.hueChipText, active && s.hueChipTextActive]}>{hue}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
         <Text style={s.sectionLabel}>Brand</Text>
         <ScrollView style={s.brandList} showsVerticalScrollIndicator={false}>
           {brands.map((brand) => {
@@ -117,7 +136,13 @@ const s = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
-  brandList: { maxHeight: 280 },
+  hueRow: { maxHeight: 44, marginBottom: 8 },
+  hueRowContent: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 2 },
+  hueChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1, borderColor: '#ccc', backgroundColor: '#f5f5f5' },
+  hueChipActive: { borderColor: '#4A90D9', backgroundColor: '#EBF3FD' },
+  hueChipText: { fontSize: 13, color: '#555' },
+  hueChipTextActive: { color: '#4A90D9', fontWeight: '600' },
+  brandList: { maxHeight: 200 },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',

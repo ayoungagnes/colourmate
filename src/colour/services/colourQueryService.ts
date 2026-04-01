@@ -6,20 +6,47 @@ import { Vec3, munsellLikeToXYZ } from './munsellToXYZ';
 // Max possible distance in XYZ space: x∈[-1,1], y∈[0,1], z∈[-1,1] → √(4+1+4) = 3
 const MAX_DIST = 3;
 
+export const HUE_ORDER = [
+  'Yellow',
+  'Yellow-Red',
+  'Red',
+  'Red-Purple',
+  'Purple',
+  'Purple-Blue',
+  'Blue',
+  'Blue-Green',
+  'Green',
+  'Green-Yellow',
+  'Neutral',
+] as const;
+
 export type ColourFilter = {
   search: string;
   brands: Set<string>;
+  tags: Set<string>;
   inInventoryOnly: boolean;
 };
 
 export const EMPTY_FILTER: ColourFilter = {
   search: '',
   brands: new Set(),
+  tags: new Set(),
   inInventoryOnly: false,
 };
 
 export function isFilterActive(f: ColourFilter): boolean {
-  return f.brands.size > 0 || f.inInventoryOnly;
+  return f.brands.size > 0 || f.tags.size > 0 || f.inInventoryOnly;
+}
+
+export function sortByHue(colours: ColourPoint[]): ColourPoint[] {
+  const rank = (c: ColourPoint): number => {
+    for (const tag of c.tag) {
+      const idx = HUE_ORDER.indexOf(tag as any);
+      if (idx !== -1) return idx;
+    }
+    return HUE_ORDER.length;
+  };
+  return [...colours].sort((a, b) => rank(a) - rank(b));
 }
 
 export type ColourMatch = {
@@ -42,6 +69,7 @@ export function filterColours(
     )
       return false;
     if (filter.brands.size > 0 && !filter.brands.has(c.brand)) return false;
+    if (filter.tags.size > 0 && !c.tag.some((t) => filter.tags.has(t))) return false;
     if (filter.inInventoryOnly && !inventoryIds.has(c.id)) return false;
     return true;
   });

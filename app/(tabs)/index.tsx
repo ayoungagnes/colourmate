@@ -18,6 +18,7 @@ import {
   EMPTY_FILTER,
   filterColours,
   isFilterActive,
+  sortByHue,
 } from '@/src/colour/services/colourQueryService';
 import { FilterSheet } from '@/src/colour/ui/components/filter-sheet';
 import { Inventory } from '@/src/inventory/models/inventory';
@@ -67,7 +68,7 @@ export default function InventoryScreen() {
   );
 
   const filtered = useMemo(
-    () => filterColours(colours, { ...filter, search }, inventoryIds),
+    () => sortByHue(filterColours(colours, { ...filter, search }, inventoryIds)),
     [colours, search, filter, inventoryIds],
   );
 

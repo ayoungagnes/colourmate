@@ -66,7 +66,7 @@ export function MixSheet({
     const g = goalRef.current;
     const colours = filterColours(
       allColoursRef.current.filter((c) => c.id !== g.id),
-      { search: '', brands: filterBrandsRef.current, inInventoryOnly: filterInventoryOnlyRef.current },
+      { search: '', brands: filterBrandsRef.current, tags: new Set(), inInventoryOnly: filterInventoryOnlyRef.current },
       inventoryIdsRef.current
     );
     if (colours.length < 2) return;
@@ -139,7 +139,7 @@ export function MixSheet({
     const base = allColours.filter((c) => c.id !== goal.id && c.id !== excludeOther);
     return filterColours(
       base,
-      { search, brands: filterBrands, inInventoryOnly: filterInventoryOnly },
+      { search, brands: filterBrands, tags: new Set(), inInventoryOnly: filterInventoryOnly },
       inventoryIds
     );
   }, [allColours, goal.id, activeSelector, selectedAId, selectedBId, filterBrands, filterInventoryOnly, inventoryIds, search]);
