@@ -1,4 +1,4 @@
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -33,6 +33,7 @@ import { AppColors } from "@/src/ui/constants/theme";
 // ---------------------------------------------------------------------------
 export default function Munsell3DScreen() {
   const db = useSQLiteContext();
+  const router = useRouter();
   const colourRepo = useMemo(() => new SqliteColourPointRepository(db), [db]);
   const inventoryRepo = useMemo(() => new SqliteInventoryRepository(db), [db]);
 
@@ -148,6 +149,16 @@ export default function Munsell3DScreen() {
       <View style={styles.titleRow}>
         <Text style={styles.title}>3D Munsell View</Text>
         <View style={styles.headerBtns}>
+          <Pressable
+            style={styles.headerBtn}
+            onPress={() => router.push("/painter" as any)}
+          >
+            <IconSymbol
+              name="paintbrush"
+              size={18}
+              color={AppColors.interactive}
+            />
+          </Pressable>
           <Pressable
             style={[styles.headerBtn, searchMode && styles.headerBtnActive]}
             onPress={toggleSearchMode}

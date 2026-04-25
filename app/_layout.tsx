@@ -92,6 +92,8 @@ export default function RootLayout() {
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
               <Stack.Screen name="colour/[id]" options={{ title: 'Color Details' }} />
               <Stack.Screen name="recipe/[id]" options={{ headerShown: false }} />
+              <Stack.Screen name="painter/index" options={{ title: 'Paint Projects' }} />
+              <Stack.Screen name="painter/[id]" options={{ headerShown: false }} />
             </Stack>
             <StatusBar style="light" />
           </ThemeProvider>
